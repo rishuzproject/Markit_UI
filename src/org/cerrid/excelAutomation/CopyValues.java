@@ -212,11 +212,11 @@ public class CopyValues {
 			out = new BufferedWriter(fstream);
 			logger.info("## Creating pshell.ps1");
 			exportResource("pshell.ps1");
-			String path = "start cmd.exe /c \"powershell -ExecutionPolicy ByPass .\\pshell.ps1 '" + riskFilePath + "'\"";
+			String path = "start cmd.exe /c \"powershell -ExecutionPolicy ByPass .\\pshell.ps1 '" + riskFilePath + "'\" & exit";
 			logger.info("## in try path ->" + path);
 			out.write("\n" + path);
 			out.close();
-			Runtime.getRuntime().exec("cmd /k start pshell.bat");
+			Runtime.getRuntime().exec("cmd.exe /c start pshell.bat");
 		} catch (IOException e) {
 			logger.error(e);
 			System.err.println("Error: " + e.getMessage());

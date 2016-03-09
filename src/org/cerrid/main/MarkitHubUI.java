@@ -54,9 +54,9 @@ public class MarkitHubUI extends javax.swing.JFrame {
                     Constants.FILE_EXTN_XLSM);
             FileNameExtensionFilter xlsx = new FileNameExtensionFilter(Constants.FILE_DESC_XLSX,
                     Constants.FILE_EXTN_XLSX);
-            fileChooser_risk.setFileFilter(xlsx);
+            fileChooser_risk.setFileFilter(xlsm);
             fileChooser_risk.addChoosableFileFilter(xls);
-            fileChooser_risk.addChoosableFileFilter(xlsm);
+            fileChooser_risk.addChoosableFileFilter(xlsx);
             fileChooser_risk.setAcceptAllFileFilterUsed(false);
 
             fieldsMap = new PropertiesUtility().readProperties();
@@ -152,7 +152,7 @@ public class MarkitHubUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel_cds_price.setText("CDS Price File");
+        jLabel_cds_price.setText("CDS Price Directory");
 
         jLabel_risk_cal.setText("Risk Calculation File");
 
@@ -325,6 +325,8 @@ public class MarkitHubUI extends javax.swing.JFrame {
     }
     private void ok_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ok_buttonActionPerformed
         if (validateFields()) {
+            jLabel_error.setVisible(false);
+            this.setVisible(false);
             setEnableField(false);
             String userName = jTextField_user_name.getText().trim();
             String password = new String(jPasswordField.getPassword());
@@ -367,6 +369,7 @@ public class MarkitHubUI extends javax.swing.JFrame {
         jTextField_user_name.setEditable(true);
         jPasswordField.setEditable(true);
         setEnableField(true);
+        this.setVisible(true);
     }
     private void jTextField_cds_priceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField_cds_priceMouseClicked
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {

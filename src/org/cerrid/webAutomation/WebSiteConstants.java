@@ -37,4 +37,16 @@ public class WebSiteConstants {
 	public static final String RISK_FILE_COPY_SHEET_NAME = "PricingDatafrom_GloebeOp";
 
 	public static final String CDS_FILE_START_STRING = "cds_prices";
+	
+	public static final String REDIRECT_URL = "https://beta.hub.com/?compatibility=8&openprovider=UXS#/provider";
+	
+	public static final String WAIT_IMAGE_XPATH = "//*[@id='content-panel']/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td[2]/table/tbody/tr[2]/td/div/table/tbody/tr[1]/td/div/div/img";
+	
+	public static final String TAB_CLASS_NAME = "MNavigationBarLabelSmall";
+	
+	public static final String LOGOUT_DROPDOWN = "blueAuctionMenuButton";
+	 
+	public static final String LOGOUT_BUTTON = "gwt-Anchor";
+	
+	public static final String LOGIN_BUTTON = "loginButton";
 }

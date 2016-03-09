@@ -236,7 +236,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel_cds_price">
           <Properties>
-            <Property name="text" type="java.lang.String" value="CDS Price File"/>
+            <Property name="text" type="java.lang.String" value="CDS Price Directory"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel_risk_cal">
