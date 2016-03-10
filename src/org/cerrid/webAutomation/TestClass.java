@@ -1,8 +1,19 @@
 package org.cerrid.webAutomation;
 
+import java.awt.AWTException;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
+
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -74,21 +85,29 @@ public class TestClass {
 	public void login() {
 		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
-		driver.get(WebSiteConstants.url);
-		WebElement userNameElement = driver.findElement(By.id(WebSiteConstants.USER_NAME_ELEMENT_ID));
-		userNameElement.sendKeys(username);
-		WebElement passwordElement = driver.findElement(By.id(WebSiteConstants.PASSWORD_ELEMENT_ID));
-		passwordElement.sendKeys(password);
-		WebElement submitElement = driver.findElement(By.id(WebSiteConstants.LOGIN_BUTTON));
-		// passwordElement.submit();
-		submitElement.click();
+		WebElement userNameElement = null;
+		int trying = 0;
+		while (userNameElement == null && trying < 10) {
+			try {
+				driver.get(WebSiteConstants.url);
+				userNameElement = driver.findElement(By.id(WebSiteConstants.USER_NAME_ELEMENT_ID));
+				userNameElement.sendKeys(username);
+				WebElement passwordElement = driver.findElement(By.id(WebSiteConstants.PASSWORD_ELEMENT_ID));
+				passwordElement.sendKeys(password);
+				WebElement submitElement = driver.findElement(By.id(WebSiteConstants.LOGIN_BUTTON));
+				// passwordElement.submit();
+				submitElement.click();
+			} catch (Exception e) {
+				logger.log(Level.INFO, "Could not Login Trying Again " + trying);
+				trying++;
+			}
+		}
 	}
 
 	public void changePage() {
-		WebDriverWait wait = new WebDriverWait(driver, 50);
+		WebDriverWait wait = new WebDriverWait(driver, 100);
 		driver.get(WebSiteConstants.REDIRECT_URL);
 		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id(WebSiteConstants.FIRST_IFRAME_ID)));
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(WebSiteConstants.SECOND_IFRAME_ID)));
 		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.className(WebSiteConstants.SECOND_IFRAME_ID)));
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(WebSiteConstants.WAIT_IMAGE_XPATH)));
 		driver.switchTo().defaultContent();
@@ -105,7 +124,7 @@ public class TestClass {
 	}
 
 	public void calculateValues() {
-		WebDriverWait wait = new WebDriverWait(driver, 50);
+		WebDriverWait wait = new WebDriverWait(driver, 100);
 		for (DataFields dataField : dataFieldsList) {
 			if (dataField.getIndicesType().equalsIgnoreCase(WebSiteConstants.INDICES_TYPE_CMBX)) {
 				WebElement cmbxTab = wait.until(ExpectedConditions
@@ -123,7 +142,6 @@ public class TestClass {
 				WebElement calculateBtn = driver.findElement(By.id(WebSiteConstants.CALCULATE_BUTTON_ID));
 				calculateBtn.click();
 				while (!calculateBtn.isEnabled()) {
-
 				}
 				WebElement spreadValueElement = driver.findElement(By.xpath(WebSiteConstants.SPREAD_VALUE_XPATH));
 				WebElement walValueElement = driver.findElement(By.xpath(WebSiteConstants.WAL_VALUE_XPATH));
@@ -137,13 +155,10 @@ public class TestClass {
 				}
 				try {
 					dataField.setCalculatedSpreadValue(Double.parseDouble(spreadValueElement.getText()));
-					System.out.println(spreadValueElement.getText());
 					dataField.setCalculatedWalValue(Double.parseDouble(walValueElement.getText()));
-					System.out.println(walValueElement.getText());
 					dataField.setCalculatedPV01Value(Double.parseDouble(pv01ValueElement.getText().replace(",", "")));
-					System.out.println(pv01ValueElement.getText());
 				} catch (Exception e) {
-					logger.info(" :: Interrupted -" + e);
+					logger.info(e);
 					e.printStackTrace();
 				}
 			}
@@ -151,7 +166,7 @@ public class TestClass {
 	}
 
 	public void logout() {
-		WebDriverWait wait = new WebDriverWait(driver, 50);
+		WebDriverWait wait = new WebDriverWait(driver, 100);
 		driver.switchTo().defaultContent();
 		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id(WebSiteConstants.FIRST_IFRAME_ID)));
 		WebElement markItElement = wait

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.cerrid.excelAutomation.CopyValues;
 import org.cerrid.excelAutomation.SetCalculatedValues;
@@ -20,23 +21,36 @@ public class AutomationController {
 			String indicexType) {
 		logger.info(":: Entered in controller ");
 		Map<String, String> responseMap = new HashMap<>();
+		TestClass testClass = null;
 		try {
 			CopyValues copyValues = new CopyValues();
 			List<DataFields> dataList = copyValues.copyDataFromExcel(priceFilePath, riskFilePath, indicexType);
-			TestClass testClass = new TestClass(username, password, riskFilePath, priceFilePath, dataList);
+			testClass = new TestClass(username, password, riskFilePath, priceFilePath, dataList);
 			testClass.login();
 			testClass.changePage();
 			testClass.calculateValues();
-			testClass.logout();
 			SetCalculatedValues setCalculatedValues = new SetCalculatedValues();
 			setCalculatedValues.readDataFile(dataList, riskFilePath);
 			responseMap.put("status", "success");
 			return responseMap;
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info(" ---------------------------EXCEPTION - START------------------------ ");
+			logger.log(Level.FATAL, e.getMessage(), e);
+			logger.info(" ---------------------------EXCEPTION - END------------------------ ");
 			responseMap.put("status", "fail");
-			responseMap.put("reason", e.toString());
+			String message = "";
+			if (e.getMessage().contains("Timeout")) {
+				message = "Connection Timeout, Please Check Connection.";
+			} else {
+				message = e.getMessage();
+			}
+			responseMap.put("reason", message);
 			return responseMap;
+		} finally {
+			if (null != testClass)
+				logger.info("Log out ..");
+			testClass.logout();
 		}
 	}
 

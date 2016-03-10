@@ -2,7 +2,7 @@ package org.cerrid.webAutomation;
 
 public class WebSiteConstants {
 
-	public static final String url = "https://beta.hub.com/";
+	public static final String url = "https://beta.hub.com/Login";
 
 	public static final String USER_NAME_ELEMENT_ID = "user_id";
 	public static final String PASSWORD_ELEMENT_ID = "user_password";
