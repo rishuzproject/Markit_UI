@@ -1,23 +1,16 @@
 package org.cerrid.webAutomation;
 
-import java.awt.AWTException;
-import java.awt.HeadlessException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,7 +18,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class TestClass {
 
 	static Logger logger = Logger.getLogger(TestClass.class);
-	private HtmlUnitDriver driver;
+	private WebDriver driver;
 	private String riskCalcFilePath;
 	private String pricingDataFilePath;
 	private String username;
@@ -33,20 +26,40 @@ public class TestClass {
 	private List<DataFields> dataFieldsList;
 
 	public TestClass(String username, String password, String riskCalcFilePath, String pricingDataFilePath,
-			List<DataFields> dataFieldsList) {
-		driver = new HtmlUnitDriver(true);
-		this.dataFieldsList = dataFieldsList;
-		this.riskCalcFilePath = riskCalcFilePath;
-		this.pricingDataFilePath = pricingDataFilePath;
-		this.username = username;
-		this.password = password;
+			List<DataFields> dataFieldsList) {	boolean driverFound = false;
+			try {
+				System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+				driver = new ChromeDriver();
+				driverFound = true;
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			if (!driverFound) {
+				driver = new FirefoxDriver();
+				driverFound = true;
+			}
+			if (!driverFound) {
+				try {
+					System.setProperty("webdriver.ie.driver", "IEDriverServer.exe");
+					driver = new InternetExplorerDriver();
+					driverFound = true;
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			}
+			this.dataFieldsList = dataFieldsList;
+			this.riskCalcFilePath = riskCalcFilePath;
+			this.pricingDataFilePath = pricingDataFilePath;
+			this.username = username;
+			this.password = password;
+		
 	}
 
-	public HtmlUnitDriver getDriver() {
+	public WebDriver getDriver() {
 		return driver;
 	}
 
-	public void setDriver(HtmlUnitDriver driver) {
+	public void setDriver(WebDriver driver) {
 		this.driver = driver;
 	}
 

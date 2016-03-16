@@ -46,12 +46,12 @@ public class AutomationController {
 				message = e.getMessage();
 			}
 			responseMap.put("reason", message);
-			return responseMap;
 		} finally {
 			if (null != testClass)
 				logger.info("Log out ..");
 			testClass.logout();
 		}
+		return responseMap;
 	}
 
 	public static void main(String[] args) {
