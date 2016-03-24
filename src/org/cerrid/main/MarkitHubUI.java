@@ -12,11 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.log4j.Logger;
 import org.cerrid.Intialize.EncrypterDecrypter;
 import org.cerrid.Intialize.PropertiesUtility;
 import org.cerrid.constants.Constants;
+import org.cerrid.controller.AutomationController;
 
 /**
  *
@@ -24,433 +26,501 @@ import org.cerrid.constants.Constants;
  */
 public class MarkitHubUI extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MarkitHubUI
-     */
-    private static final long serialVersionUID = 1288504235258677899L;
-    static Logger logger = Logger.getLogger(MarkitHubUI.class);
-    private JFileChooser fileChooser;
-    private JFileChooser fileChooser_risk;
-    EncrypterDecrypter ecrypt = new EncrypterDecrypter();
+	/**
+	 * Creates new form MarkitHubUI
+	 */
+	private static final long serialVersionUID = 1288504235258677899L;
+	static Logger logger = Logger.getLogger(MarkitHubUI.class);
+	private JFileChooser fileChooser;
+	private JFileChooser fileChooser_risk;
+	EncrypterDecrypter ecrypt = new EncrypterDecrypter();
 
-    public MarkitHubUI() {
-        initComponents();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        initApp();
-    }
+	public MarkitHubUI() {
+		initComponents();
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		initApp();
+	}
 
-    private void initApp() {
-        logger.info("Initializing App");
-        Map<String, String> fieldsMap;
-        try {
-            fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	private void initApp() {
+		logger.info("Initializing App");
+		Map<String, String> fieldsMap;
+		try {
+			fileChooser = new JFileChooser();
+			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			jProgressBar1.setVisible(false);
+			fileChooser_risk = new JFileChooser();
+			FileNameExtensionFilter xls = new FileNameExtensionFilter(Constants.FILE_DESC_XLS, Constants.FILE_EXTN_XLS);
+			FileNameExtensionFilter xlsm = new FileNameExtensionFilter(Constants.FILE_DESC_XLSM,
+					Constants.FILE_EXTN_XLSM);
+			FileNameExtensionFilter xlsx = new FileNameExtensionFilter(Constants.FILE_DESC_XLSX,
+					Constants.FILE_EXTN_XLSX);
+			fileChooser_risk.setFileFilter(xlsm);
+			fileChooser_risk.addChoosableFileFilter(xls);
+			fileChooser_risk.addChoosableFileFilter(xlsx);
+			fileChooser_risk.setAcceptAllFileFilterUsed(false);
 
-            fileChooser_risk = new JFileChooser();
-            FileNameExtensionFilter xls = new FileNameExtensionFilter(Constants.FILE_DESC_XLS, Constants.FILE_EXTN_XLS);
-            FileNameExtensionFilter xlsm = new FileNameExtensionFilter(Constants.FILE_DESC_XLSM,
-                    Constants.FILE_EXTN_XLSM);
-            FileNameExtensionFilter xlsx = new FileNameExtensionFilter(Constants.FILE_DESC_XLSX,
-                    Constants.FILE_EXTN_XLSX);
-            fileChooser_risk.setFileFilter(xlsm);
-            fileChooser_risk.addChoosableFileFilter(xls);
-            fileChooser_risk.addChoosableFileFilter(xlsx);
-            fileChooser_risk.setAcceptAllFileFilterUsed(false);
+			fieldsMap = new PropertiesUtility().readProperties();
+			if (null != fieldsMap && !fieldsMap.isEmpty()) {
+				jTextField_user_name.setText(fieldsMap.get(Constants.USER_NAME).toString());
+				try {
+					jPasswordField.setText(ecrypt.decryptData(fieldsMap.get(Constants.PASSWORD).toString()));
+				} catch (Exception ex) {
+					logger.debug(ex.getMessage());
+				}
+				jTextField_cds_price.setText(fieldsMap.get(Constants.CDS_FILE_PATH).toString());
+				jTextField_risk_cal.setText(fieldsMap.get(Constants.RISK_CAL_FILE_PATH).toString());
+			}
+			jLabel_error.setVisible(false);
+		} catch (IOException ex) {
+			logger.debug(ex.getMessage());
+		}
 
-            fieldsMap = new PropertiesUtility().readProperties();
-            if (null != fieldsMap && !fieldsMap.isEmpty()) {
-                jTextField_user_name.setText(fieldsMap.get(Constants.USER_NAME).toString());
-                try {
-                    jPasswordField.setText(ecrypt.decryptData(fieldsMap.get(Constants.PASSWORD).toString()));
-                } catch (Exception ex) {
-                    logger.debug(ex.getMessage());
-                }
-                jTextField_cds_price.setText(fieldsMap.get(Constants.CDS_FILE_PATH).toString());
-                jTextField_risk_cal.setText(fieldsMap.get(Constants.RISK_CAL_FILE_PATH).toString());
-            }
-            jLabel_error.setVisible(false);
-        } catch (IOException ex) {
-            logger.debug(ex.getMessage());
-        }
+	}
 
-    }
+	/**
+	 * This method is called from within the constructor to initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is always
+	 * regenerated by the Form Editor.
+	 */
+	@SuppressWarnings("unchecked")
+	// <editor-fold defaultstate="collapsed" desc="Generated Code">
+	private void initComponents() {
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+		jPanel1 = new javax.swing.JPanel();
+		jLabel_Title = new javax.swing.JLabel();
+		jLabel_user_name = new javax.swing.JLabel();
+		jLabel_password = new javax.swing.JLabel();
+		jTextField_user_name = new javax.swing.JTextField(20);
+		jCheckBox_rememberPswd = new javax.swing.JCheckBox();
+		jComboBox1 = new javax.swing.JComboBox();
+		ok_button = new javax.swing.JButton();
+		jTextField_cds_price = new javax.swing.JTextField(20);
+		jLabel_cds_price = new javax.swing.JLabel();
+		jLabel_risk_cal = new javax.swing.JLabel();
+		jTextField_risk_cal = new javax.swing.JTextField(20);
+		jPasswordField = new javax.swing.JPasswordField(20);
+		jLabel_error = new javax.swing.JLabel();
+		jLabel1 = new javax.swing.JLabel();
+		jLabel2 = new javax.swing.JLabel();
+		jLabel3 = new javax.swing.JLabel();
+		jLabel4 = new javax.swing.JLabel();
+		jSeparator2 = new javax.swing.JSeparator();
+		jLabel5 = new javax.swing.JLabel();
+		jProgressBar1 = new javax.swing.JProgressBar();
+		jButton1_Cancel = new javax.swing.JButton();
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel_Title = new javax.swing.JLabel();
-        jLabel_user_name = new javax.swing.JLabel();
-        jLabel_password = new javax.swing.JLabel();
-        jTextField_user_name = new javax.swing.JTextField(20);
-        jCheckBox_rememberPswd = new javax.swing.JCheckBox();
-        jComboBox1 = new javax.swing.JComboBox();
-        ok_button = new javax.swing.JButton();
-        jTextField_cds_price = new javax.swing.JTextField(20);
-        jLabel_cds_price = new javax.swing.JLabel();
-        jLabel_risk_cal = new javax.swing.JLabel();
-        jTextField_risk_cal = new javax.swing.JTextField(20);
-        jPasswordField = new javax.swing.JPasswordField(20);
-        jLabel_error = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        jLabel5 = new javax.swing.JLabel();
+		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setTitle("Markit-Hub");
+		setResizable(false);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Markit-Hub");
-        setResizable(false);
+		jLabel_Title.setFont(new java.awt.Font("Cambria", 1, 24)); // NOI18N
+		jLabel_Title.setForeground(new java.awt.Color(0, 153, 204));
+		jLabel_Title.setText("Markit");
 
-        jLabel_Title.setFont(new java.awt.Font("Cambria", 1, 24)); // NOI18N
-        jLabel_Title.setForeground(new java.awt.Color(0, 153, 204));
-        jLabel_Title.setText("Markit");
+		jLabel_user_name.setText("User Name");
 
-        jLabel_user_name.setText("User Name");
+		jLabel_password.setText("Password");
 
-        jLabel_password.setText("Password");
+		jTextField_user_name.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jTextField_user_nameActionPerformed(evt);
+			}
+		});
 
-        jTextField_user_name.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_user_nameActionPerformed(evt);
-            }
-        });
+		jCheckBox_rememberPswd.setText("Remember");
+		jCheckBox_rememberPswd.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBox_rememberPswdActionPerformed(evt);
+			}
+		});
 
-        jCheckBox_rememberPswd.setText("Remember");
-        jCheckBox_rememberPswd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox_rememberPswdActionPerformed(evt);
-            }
-        });
+		jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CMBX" }));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CMBX" }));
+		ok_button.setText("Submit");
+		ok_button.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				ok_buttonActionPerformed(evt);
+			}
+		});
 
-        ok_button.setText("OK");
-        ok_button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ok_buttonActionPerformed(evt);
-            }
-        });
+		jTextField_cds_price.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				jTextField_cds_priceMouseClicked(evt);
+			}
+		});
+		jTextField_cds_price.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jTextField_cds_priceActionPerformed(evt);
+			}
+		});
 
-        jTextField_cds_price.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTextField_cds_priceMouseClicked(evt);
-            }
-        });
-        jTextField_cds_price.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_cds_priceActionPerformed(evt);
-            }
-        });
+		jLabel_cds_price.setText("CDS Price Directory");
 
-        jLabel_cds_price.setText("CDS Price Directory");
+		jLabel_risk_cal.setText("Risk Calculation File");
 
-        jLabel_risk_cal.setText("Risk Calculation File");
+		jTextField_risk_cal.setPreferredSize(null);
+		jTextField_risk_cal.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				jTextField_risk_calMouseClicked(evt);
+			}
+		});
+		jTextField_risk_cal.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jTextField_risk_calActionPerformed(evt);
+			}
+		});
 
-        jTextField_risk_cal.setPreferredSize(null);
-        jTextField_risk_cal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTextField_risk_calMouseClicked(evt);
-            }
-        });
-        jTextField_risk_cal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_risk_calActionPerformed(evt);
-            }
-        });
+		jLabel_error.setForeground(new java.awt.Color(255, 0, 0));
+		jLabel_error.setText(" Please enter all fields marked with *");
 
-        jLabel_error.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel_error.setText(" Please enter all fields marked with *");
+		jLabel1.setForeground(new java.awt.Color(255, 0, 0));
+		jLabel1.setText("*");
 
-        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel1.setText("*");
+		jLabel2.setForeground(new java.awt.Color(255, 0, 51));
+		jLabel2.setText("*");
 
-        jLabel2.setForeground(new java.awt.Color(255, 0, 51));
-        jLabel2.setText("*");
+		jLabel3.setForeground(new java.awt.Color(255, 0, 51));
+		jLabel3.setText("*");
 
-        jLabel3.setForeground(new java.awt.Color(255, 0, 51));
-        jLabel3.setText("*");
+		jLabel4.setForeground(new java.awt.Color(255, 0, 51));
+		jLabel4.setText("*");
 
-        jLabel4.setForeground(new java.awt.Color(255, 0, 51));
-        jLabel4.setText("*");
+		jLabel5.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+		jLabel5.setText("Message : ");
+		jLabel5.setFocusable(false);
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        jLabel5.setText("Message : ");
-        jLabel5.setFocusable(false);
+		jButton1_Cancel.setText("Close");
+		jButton1_Cancel.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButton1_CancelActionPerformed(evt);
+			}
+		});
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jSeparator2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGap(36, 36, 36)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel_user_name)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(jLabel1))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel_password)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(jLabel2))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel_cds_price)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(jLabel3))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel_risk_cal)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(jLabel4)))
-                                    .addGap(70, 70, 70)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jTextField_user_name)
-                                        .addComponent(jTextField_cds_price)
-                                        .addComponent(jPasswordField)
-                                        .addComponent(jTextField_risk_cal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addGap(211, 211, 211)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                            .addComponent(ok_button, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(148, 148, 148))
-                                        .addComponent(jCheckBox_rememberPswd, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel5)
-                                .addGap(19, 19, 19)
-                                .addComponent(jLabel_error, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(10, 10, 10)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel_Title, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel_Title)
-                .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_user_name)
-                    .addComponent(jTextField_user_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_password)
-                    .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField_cds_price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_cds_price)
-                    .addComponent(jLabel3))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField_risk_cal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_risk_cal)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox_rememberPswd)
-                .addGap(18, 18, 18)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(ok_button)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel_error, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9))
-        );
+		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+		jPanel1.setLayout(jPanel1Layout);
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+						jPanel1Layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
+								.addComponent(jLabel_Title, javax.swing.GroupLayout.PREFERRED_SIZE, 84,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(jSeparator2))
+						.addGroup(jPanel1Layout.createSequentialGroup()
+								.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addGroup(jPanel1Layout.createSequentialGroup().addGap(20, 20, 20)
+												.addGroup(jPanel1Layout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addGroup(jPanel1Layout.createSequentialGroup()
+																.addComponent(jLabel_user_name)
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addComponent(jLabel1))
+												.addGroup(jPanel1Layout.createSequentialGroup()
+														.addComponent(jLabel_password)
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addComponent(jLabel2))
+												.addGroup(jPanel1Layout.createSequentialGroup()
+														.addComponent(jLabel_cds_price)
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addComponent(jLabel3))
+												.addGroup(jPanel1Layout.createSequentialGroup()
+														.addComponent(jLabel_risk_cal)
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addComponent(jLabel4)))
+										.addGap(70, 70, 70)
+										.addGroup(jPanel1Layout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addGroup(jPanel1Layout.createSequentialGroup()
+														.addComponent(ok_button, javax.swing.GroupLayout.PREFERRED_SIZE,
+																72, javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addGap(18, 18, 18)
+														.addComponent(jButton1_Cancel,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 84,
+																javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62,
+																Short.MAX_VALUE))
+												.addComponent(jTextField_user_name).addComponent(jTextField_cds_price)
+												.addComponent(jPasswordField)
+												.addComponent(jTextField_risk_cal, javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+														Short.MAX_VALUE)))
+								.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(jLabel5)
+										.addGap(19, 19, 19)
+										.addComponent(jLabel_error, javax.swing.GroupLayout.PREFERRED_SIZE, 283,
+												javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addGap(0, 0, Short.MAX_VALUE)).addGroup(
+												javax.swing.GroupLayout.Alignment.TRAILING,
+												jPanel1Layout.createSequentialGroup()
+														.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
+																Short.MAX_VALUE)
+														.addComponent(jCheckBox_rememberPswd).addGap(10, 10, 10)))
+								.addGap(10, 10, 10)))
+						.addContainerGap())
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+						jPanel1Layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE).addComponent(jProgressBar1,
+								javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addGap(57, 57, 57)));
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(jLabel_Title)
+						.addGap(27, 27, 27)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel_user_name)
+								.addComponent(jTextField_user_name, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabel1))
+						.addGap(18, 18, 18)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel_password)
+								.addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabel2))
+						.addGap(18, 18, 18)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jTextField_cds_price, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabel_cds_price).addComponent(jLabel3))
+						.addGap(18, 18, 18)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jTextField_risk_cal, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabel_risk_cal).addComponent(jLabel4))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCheckBox_rememberPswd)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+						.addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addGap(18, 18, 18)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(ok_button).addComponent(jButton1_Cancel))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+						.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addGap(18, 18, 18)
+						.addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jLabel5).addComponent(jLabel_error,
+										javax.swing.GroupLayout.PREFERRED_SIZE, 14,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addGap(9, 9, 9)));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jPanel1,
+						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(jPanel1,
+								javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+								javax.swing.GroupLayout.PREFERRED_SIZE)));
 
-        getAccessibleContext().setAccessibleName("Markit");
+		getAccessibleContext().setAccessibleName("Markit");
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
+		pack();
+	}// </editor-fold>
 
-    private void jTextField_user_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_user_nameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_user_nameActionPerformed
+	private void jTextField_user_nameActionPerformed(java.awt.event.ActionEvent evt) {
+		// TODO add your handling code here:
+	}
 
-    private void jCheckBox_rememberPswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox_rememberPswdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox_rememberPswdActionPerformed
+	private void jCheckBox_rememberPswdActionPerformed(java.awt.event.ActionEvent evt) {
+		// TODO add your handling code here:
+	}
 
-    private void setEnableField(boolean param) {
-        jTextField_user_name.setEnabled(param);
-        jPasswordField.setEnabled(param);
-        jTextField_cds_price.setEnabled(param);
-        jTextField_risk_cal.setEnabled(param);
-        ok_button.setEnabled(param);
-        jComboBox1.setEnabled(param);
-        jCheckBox_rememberPswd.setEnabled(param);
-    }
-    private void ok_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ok_buttonActionPerformed
-        if (validateFields()) {
-            jLabel_error.setVisible(false);
-            this.setVisible(false);
-            setEnableField(false);
-            String userName = jTextField_user_name.getText().trim();
-            String password = new String(jPasswordField.getPassword());
-            String cdsFilePath = jTextField_cds_price.getText();
-            String riskFilePath = jTextField_risk_cal.getText();
-            String indicexType = String.valueOf(jComboBox1.getSelectedItem());
+	private void setEnableField(boolean param) {
+		jTextField_user_name.setEnabled(param);
+		jPasswordField.setEnabled(param);
+		jTextField_cds_price.setEnabled(param);
+		jTextField_risk_cal.setEnabled(param);
+		ok_button.setEnabled(param);
+		jComboBox1.setEnabled(param);
+		jCheckBox_rememberPswd.setEnabled(param);
+		jButton1_Cancel.setEnabled(param);
+	}
 
-            if (jCheckBox_rememberPswd.isSelected()) {
-                Map<String, String> fieldsMap = new HashMap<>();
-                fieldsMap.put(Constants.USER_NAME, jTextField_user_name.getText().trim());
-                try {
-                    fieldsMap.put(Constants.PASSWORD, ecrypt.encryptData(password));
-                } catch (Exception ex) {
-                    logger.debug(ex.getMessage());
-                }
-                fieldsMap.put(Constants.CDS_FILE_PATH, jTextField_cds_price.getText());
-                fieldsMap.put(Constants.RISK_CAL_FILE_PATH, jTextField_risk_cal.getText());
-                new PropertiesUtility().saveProperties(fieldsMap);
-            }
-            // Call Automation method
-//            AutomationController automate = new AutomationController();
-//            Map<String, String> responseMap = automate.controller(userName, password, cdsFilePath, riskFilePath,
-//                    indicexType);
-            ProgressUI progressTask = new ProgressUI();
-            progressTask.startProgress(userName, password, cdsFilePath, riskFilePath, indicexType, progressTask,this);
+	private void ok_buttonActionPerformed(java.awt.event.ActionEvent evt) {
+		if (validateFields()) {
+			jLabel_error.setVisible(false);
+			setEnableField(false);
+			final String userName = jTextField_user_name.getText().trim();
+			final String password = new String(jPasswordField.getPassword());
+			final String cdsFilePath = jTextField_cds_price.getText();
+			final String riskFilePath = jTextField_risk_cal.getText();
+			final String indicexType = String.valueOf(jComboBox1.getSelectedItem());
+			Map<String, String> responseMap = null;
+			if (jCheckBox_rememberPswd.isSelected()) {
+				Map<String, String> fieldsMap = new HashMap<>();
+				fieldsMap.put(Constants.USER_NAME, jTextField_user_name.getText().trim());
+				try {
+					fieldsMap.put(Constants.PASSWORD, ecrypt.encryptData(password));
+				} catch (Exception ex) {
+					logger.debug(ex.getMessage());
+				}
+				fieldsMap.put(Constants.CDS_FILE_PATH, jTextField_cds_price.getText());
+				fieldsMap.put(Constants.RISK_CAL_FILE_PATH, jTextField_risk_cal.getText());
+				new PropertiesUtility().saveProperties(fieldsMap);
+			}
 
-        } else {
-            jLabel_error.setVisible(true);
-        }        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_ok_buttonActionPerformed
-    public  void updateErrorField(Map<String, String> responseMap) {
-        if (responseMap.get("status").equalsIgnoreCase("success")) {
-            jLabel_error.setVisible(true);
-            jLabel_error.setText("Success");
-        } else {
-            jLabel_error.setVisible(true);
-            jLabel_error.setText("Error:" + responseMap.get("reason").trim());
-        }
-        jTextField_user_name.setEditable(true);
-        jPasswordField.setEditable(true);
-        setEnableField(true);
-        this.setVisible(true);
-    }
-    private void jTextField_cds_priceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField_cds_priceMouseClicked
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            jTextField_cds_price.setText(fileChooser.getSelectedFile().getAbsolutePath());
-        }
-    }//GEN-LAST:event_jTextField_cds_priceMouseClicked
+			class MyWorker extends SwingWorker<Void, Void> {
 
-    private void jTextField_cds_priceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_cds_priceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_cds_priceActionPerformed
+				Map<String, String> resMap = null;
 
-    private void jTextField_risk_calMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField_risk_calMouseClicked
-        if (fileChooser_risk.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            jTextField_risk_cal.setText(fileChooser_risk.getSelectedFile().getAbsolutePath());
-        }
-    }//GEN-LAST:event_jTextField_risk_calMouseClicked
+				@Override
+				protected Void doInBackground() throws Exception {
+					jProgressBar1.setVisible(true);
+					jProgressBar1.setIndeterminate(true);
+					AutomationController automate = new AutomationController();
+					Map<String, String> responseMap = null;
+					responseMap = automate.controller(userName, password, cdsFilePath, riskFilePath, indicexType);
+					resMap = responseMap;
+					return null;
+				}
 
-    private void jTextField_risk_calActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_risk_calActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_risk_calActionPerformed
+				@Override
+				protected void done() {
+					jProgressBar1.setVisible(false);
+					updateErrorField(resMap);
+				}
 
-    private boolean validateFields() {
-        return !jTextField_user_name.getText().trim().isEmpty() && jPasswordField.getPassword().length >= 1
-                && !jTextField_cds_price.getText().trim().isEmpty() && !jTextField_risk_cal.getText().trim().isEmpty();
-    }
+			}
+			new MyWorker().execute();
+			// Call Automation method
+			// AutomationController automate = new AutomationController();
+			// Map<String, String> responseMap = automate.controller(userName,
+			// password, cdsFilePath, riskFilePath,
+			// indicexType);
+			// ProgressUI progressTask = new ProgressUI();
+			// progressTask.startProgress(userName, password, cdsFilePath,
+			// riskFilePath, indicexType, progressTask, this);
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+		} else {
+			jLabel_error.setVisible(true);
+		} // TODO add your handling code here:
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MarkitHubUI().setVisible(true);
-            }
-        });
-    }
+	}
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBox_rememberPswd;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel_Title;
-    private javax.swing.JLabel jLabel_cds_price;
-    private javax.swing.JLabel jLabel_error;
-    private javax.swing.JLabel jLabel_password;
-    private javax.swing.JLabel jLabel_risk_cal;
-    private javax.swing.JLabel jLabel_user_name;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPasswordField jPasswordField;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField_cds_price;
-    private javax.swing.JTextField jTextField_risk_cal;
-    private javax.swing.JTextField jTextField_user_name;
-    private javax.swing.JButton ok_button;
-    // End of variables declaration//GEN-END:variables
+	public void updateErrorField(Map<String, String> responseMap) {
+		if (null != responseMap) {
+			if (responseMap.get("status").equalsIgnoreCase("success")) {
+				jLabel_error.setVisible(true);
+				jLabel_error.setText("Success");
+			} else {
+				jLabel_error.setVisible(true);
+				jLabel_error.setText("Error:" + responseMap.get("reason").trim());
+			}
+			jTextField_user_name.setEditable(true);
+			jPasswordField.setEditable(true);
+		}
+		setEnableField(true);
+	}
+
+	private void jTextField_cds_priceMouseClicked(java.awt.event.MouseEvent evt) {
+		if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			jTextField_cds_price.setText(fileChooser.getSelectedFile().getAbsolutePath());
+		}
+	}
+
+	private void jTextField_cds_priceActionPerformed(java.awt.event.ActionEvent evt) {
+		// TODO add your handling code here:
+	}
+
+	private void jTextField_risk_calMouseClicked(java.awt.event.MouseEvent evt) {
+		if (fileChooser_risk.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			jTextField_risk_cal.setText(fileChooser_risk.getSelectedFile().getAbsolutePath());
+		}
+	}
+
+	private void jTextField_risk_calActionPerformed(java.awt.event.ActionEvent evt) {
+		// TODO add your handling code here:
+	}
+
+	private void jButton1_CancelActionPerformed(java.awt.event.ActionEvent evt) {
+		System.exit(1);
+	}
+
+	private boolean validateFields() {
+		return !jTextField_user_name.getText().trim().isEmpty() && jPasswordField.getPassword().length >= 1
+				&& !jTextField_cds_price.getText().trim().isEmpty() && !jTextField_risk_cal.getText().trim().isEmpty();
+	}
+
+	/**
+	 * @param args
+	 *            the command line arguments
+	 */
+	public static void main(String args[]) {
+		/* Set the Nimbus look and feel */
+		// <editor-fold defaultstate="collapsed" desc=" Look and feel setting
+		// code (optional) ">
+		/*
+		 * If Nimbus (introduced in Java SE 6) is not available, stay with the
+		 * default look and feel. For details see
+		 * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.
+		 * html
+		 */
+		try {
+			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (ClassNotFoundException ex) {
+			java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null,
+					ex);
+		} catch (InstantiationException ex) {
+			java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null,
+					ex);
+		} catch (IllegalAccessException ex) {
+			java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null,
+					ex);
+		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+			java.util.logging.Logger.getLogger(MarkitHubUI.class.getName()).log(java.util.logging.Level.SEVERE, null,
+					ex);
+		}
+		// </editor-fold>
+
+		/* Create and display the form */
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new MarkitHubUI().setVisible(true);
+			}
+		});
+	}
+
+	// Variables declaration - do not modify
+	private javax.swing.JButton jButton1_Cancel;
+	private javax.swing.JCheckBox jCheckBox_rememberPswd;
+	private javax.swing.JComboBox jComboBox1;
+	private javax.swing.JLabel jLabel1;
+	private javax.swing.JLabel jLabel2;
+	private javax.swing.JLabel jLabel3;
+	private javax.swing.JLabel jLabel4;
+	private javax.swing.JLabel jLabel5;
+	private javax.swing.JLabel jLabel_Title;
+	private javax.swing.JLabel jLabel_cds_price;
+	private javax.swing.JLabel jLabel_error;
+	private javax.swing.JLabel jLabel_password;
+	private javax.swing.JLabel jLabel_risk_cal;
+	private javax.swing.JLabel jLabel_user_name;
+	private javax.swing.JPanel jPanel1;
+	private javax.swing.JPasswordField jPasswordField;
+	private javax.swing.JProgressBar jProgressBar1;
+	private javax.swing.JSeparator jSeparator2;
+	private javax.swing.JTextField jTextField_cds_price;
+	private javax.swing.JTextField jTextField_risk_cal;
+	private javax.swing.JTextField jTextField_user_name;
+	private javax.swing.JButton ok_button;
+	// End of variables declaration
 }

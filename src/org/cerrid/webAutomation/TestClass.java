@@ -6,11 +6,13 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -26,33 +28,34 @@ public class TestClass {
 	private List<DataFields> dataFieldsList;
 
 	public TestClass(String username, String password, String riskCalcFilePath, String pricingDataFilePath,
-			List<DataFields> dataFieldsList) {	boolean driverFound = false;
+			List<DataFields> dataFieldsList) {
+		boolean driverFound = false;
+		try {
+			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+			driver = new ChromeDriver();
+			driverFound = true;
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		if (!driverFound) {
+			driver = new FirefoxDriver();
+			driverFound = true;
+		}
+		if (!driverFound) {
 			try {
-				System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-				driver = new ChromeDriver();
+				System.setProperty("webdriver.ie.driver", "IEDriverServer.exe");
+				driver = new InternetExplorerDriver();
 				driverFound = true;
 			} catch (Exception e) {
 				logger.error(e);
 			}
-			if (!driverFound) {
-				driver = new FirefoxDriver();
-				driverFound = true;
-			}
-			if (!driverFound) {
-				try {
-					System.setProperty("webdriver.ie.driver", "IEDriverServer.exe");
-					driver = new InternetExplorerDriver();
-					driverFound = true;
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			}
-			this.dataFieldsList = dataFieldsList;
-			this.riskCalcFilePath = riskCalcFilePath;
-			this.pricingDataFilePath = pricingDataFilePath;
-			this.username = username;
-			this.password = password;
-		
+		}
+		this.dataFieldsList = dataFieldsList;
+		this.riskCalcFilePath = riskCalcFilePath;
+		this.pricingDataFilePath = pricingDataFilePath;
+		this.username = username;
+		this.password = password;
+
 	}
 
 	public WebDriver getDriver() {
@@ -98,6 +101,7 @@ public class TestClass {
 	public void login() {
 		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
+		driver.manage().window().setPosition(new Point(-2000, 0));
 		WebElement userNameElement = null;
 		int trying = 0;
 		while (userNameElement == null && trying < 10) {
@@ -120,7 +124,18 @@ public class TestClass {
 	public void changePage() {
 		WebDriverWait wait = new WebDriverWait(driver, 100);
 		driver.get(WebSiteConstants.REDIRECT_URL);
+		Actions action = new Actions(driver);
 		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id(WebSiteConstants.FIRST_IFRAME_ID)));
+		// Securitised Product Hover xpath @Rishabh
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(WebSiteConstants.PRODUCT_HOVER)));
+		WebElement menuHoverLink = driver.findElement(By.xpath(WebSiteConstants.PRODUCT_HOVER));
+		action.moveToElement(menuHoverLink);
+		action.perform();
+		// Select Securitised Product @Rishabh
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(WebSiteConstants.SECURTISED_PRODUCT)));
+		WebElement securtized_Prod = driver.findElement(By.xpath(WebSiteConstants.SECURTISED_PRODUCT));
+		action.click(securtized_Prod).perform();
+
 		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.className(WebSiteConstants.SECOND_IFRAME_ID)));
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(WebSiteConstants.WAIT_IMAGE_XPATH)));
 		driver.switchTo().defaultContent();
